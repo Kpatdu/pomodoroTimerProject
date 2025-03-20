@@ -1,0 +1,87 @@
+{% extends 'base.html' %}
+{% block title %}Pomodoro Timer Home{% endblock %}
+{% block content %}
+<style>
+
+    body {
+        font-family: Arial, sans-serif;
+        text-align: center;
+        background-color: #f4f4f4;
+    }
+    h2 {
+        color: #333;
+    }
+
+    #timer {
+        background-color: #fff;
+        border-radius: 5px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        padding: 20px;
+        margin: 20px auto;
+        max-width: 300px;
+    }
+
+    #countdown {
+        font-size: 24px;
+        font-weight: bold;
+        color: #e44d26;
+    }
+
+    #event {
+        font-size: 34px;
+        font-weight: bold;
+        color: #221d1c;
+    }
+
+</style>
+
+
+
+<h1>Home</h1>
+<body>
+    <h2>Pomodoro Timer</h2>
+    <div id="timer">
+        <h3 id="event">Event Name</h3>
+        <h2>Time Remaining:</h2>
+        <div id="countdown">
+            25 : 10
+        </div>
+    </div>
+    <script>
+        function updateTimer() {
+            var minutes = parseInt(document.getElementById('countdown'.textContent.split(':')[0]));
+            var seconds = parseInt(document.getElementById('countdown'.textContent.split(':')[1]));
+
+            if (seconds > 0) {
+                seconds--;
+            }
+            else {
+                if (minutes > 0) {
+                    minutes--;
+                    seconds = 59;
+                }
+            }
+            document.getElementById('countdown').textContent =
+                (minutes < 10 ? '0' : '') + minutes + ' : ' +
+                (seconds < 10 ? '0' : '') + seconds;
+        }
+        setInterval(updateTimer, 1000)
+    </script>
+</body>
+<!-- Contact Form -->
+<form method="POST">
+  {% csrf_token %}
+  {{ form.as_p }}
+  <button type="submit">Add Task</button>
+</form>
+<!-- Success Message -->
+{% if success %}
+<p><strong>Success!</strong> The Task has been successfully added.</p>
+<!-- Display Added Contact -->
+<h3>Contact Added</h3>
+<p>
+  <strong>Name:</strong> {{ added_timer.name }} <br />
+  <strong>Segment:</strong> {{ added_timer.segment }}
+</p>
+{% endif %}
+{% endblock %}
