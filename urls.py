@@ -18,9 +18,23 @@ from django.contrib import admin
 from django.urls import path
 from .views import front_page
 from .views import home_page
+from .views import edit_task
+from .views import delete_task
+from .views import search_task
 
 urlpatterns = [
     path("", front_page, name="front_page"),
     path("home/", home_page, name="home_page"),
+    path("task/", search_task, name="search_task"),
+    path(
+        "edit_task/<int:task_id>/<int:page_number>/",
+        edit_task,
+        name="edit_task",
+    ),
+    path(
+        "delete_task/<int:task_id>/<int:page_number>/",
+        delete_task,
+        name="delete_task",
+    ),
 
 ]

@@ -11,7 +11,7 @@ class TimerForm(forms.ModelForm):
                 'class': 'form-control', 
                 'placeholder': 'Enter name',
             }),
-            'phone': forms.TextInput(attrs={
+            'segment': forms.TextInput(attrs={
                 'class': 'form-control',
                 'placeholder': 'Enter segment',
                 }),

@@ -1,0 +1,126 @@
+{% extends 'base.html' %} {% block title %}Search Tasks{% endblock %}
+<!-- Content -->
+{% block content %}
+<div class="container mt-4">
+  <!-- Page Title -->
+  <h1 class="mb-4 text-primary">Search Tasks</h1>
+
+  <!-- Search Form -->
+  <form method="POST" class="border p-4 bg-light rounded shadow-sm">
+    {% csrf_token %}
+    <div class="mb-3">
+      <label for="name" class="form-label">Name:</label>
+      <input
+        type="text"
+        id="name"
+        name="name"
+        class="form-control"
+        placeholder="Enter name"
+        value="{{ name_query }}"
+      />
+    </div>
+    <div class="mb-3">
+      <label for="segment" class="form-label">Phone:</label>
+      <input
+        type="text"
+        id="segment"
+        name="segment"
+        class="form-control"
+        placeholder="Enter segment"
+        value="{{ segment_query }}"
+      />
+    </div>
+    <button type="submit" class="btn btn-primary">Search Task</button>
+  </form>
+
+  <!-- Search Results -->
+  {% if tasks %}
+  <div class="mt-4">
+    <h2 class="text-success">Search Results.</h2>
+    <p>Query: {{ name_query }} {{ segment_query }}</p>
+    <ul class="list-group">
+      {% for task in tasks %}
+      <li
+        class="list-group-item d-flex justify-content-between align-items-center"
+      >
+        <div class="d-flex align-items-center">
+          <strong style="width: 70px; text-align: left"
+            >#{{ task.id }}</strong
+          >
+          <span
+            style="
+              width: 200px;
+              overflow: hidden;
+              text-overflow: ellipsis;
+              white-space: nowrap;
+            "
+            >{{ task.name }}</span
+          >
+          <span
+            style="
+              width: 250px;
+              overflow: hidden;
+              text-overflow: ellipsis;
+              white-space: nowrap;
+            "
+            >{{ task.segment }}</span
+          >
+        </div>
+      </li>
+      {% endfor %}
+    </ul>
+
+    <!-- Pagination Controls -->
+    <nav aria-label="Page navigation" class="mt-4">
+      <ul class="pagination justify-content-center">
+        {% if tasks.has_previous %}
+        <li class="page-item">
+          <a
+            class="page-link"
+            href="?page=1&name={{ name_query }}&segment={{ segment_query }}"
+            >First</a
+          >
+        </li>
+        <li class="page-item">
+          <a
+            class="page-link"
+            href="?page={{ tasks.previous_page_number }}&name={{ name_query }}&segment={{ segment_query }}"
+            >Previous</a
+          >
+        </li>
+        {% endif %}
+
+        <li class="page-item active">
+          <span class="page-link">
+            Page {{ tasks.number }} of {{ tasks.paginator.num_pages }}
+          </span>
+        </li>
+
+        {% if tasks.has_next %}
+        <li class="page-item">
+          <a
+            class="page-link"
+            href="?page={{ tasks.next_page_number }}&name={{ name_query }}&segment={{ segment_query }}"
+            >Next</a
+          >
+        </li>
+        <li class="page-item">
+          <a
+            class="page-link"
+            href="?page={{ tasks.paginator.num_pages }}&name={{ name_query }}&task={{ tasks_query }}"
+            >Last</a
+          >
+        </li>
+        {% endif %}
+      </ul>
+    </nav>
+  </div>
+
+  {% elif request.method == "POST" %}
+  <!-- No Results Message -->
+  <div class="alert alert-warning mt-4" role="alert">
+    No tasks found. Please try again.
+  </div>
+  {% endif %}
+</div>
+{% endblock %}

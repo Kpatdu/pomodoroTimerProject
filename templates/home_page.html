@@ -43,14 +43,12 @@
     <div id="timer">
         <h3 id="event">Event Name</h3>
         <h2>Time Remaining:</h2>
-        <div id="countdown">
-            25 : 10
-        </div>
+        <div id="countdown">25 : 10</div>
     </div>
     <script>
         function updateTimer() {
-            var minutes = parseInt(document.getElementById('countdown'.textContent.split(':')[0]));
-            var seconds = parseInt(document.getElementById('countdown'.textContent.split(':')[1]));
+            var minutes = parseInt(document.getElementById('countdown'.textContent.trim().split(':')[0]));
+            var seconds = parseInt(document.getElementById('countdown'.textContent.trim().split(':')[1]));
 
             if (seconds > 0) {
                 seconds--;
@@ -80,8 +78,8 @@
 <!-- Display Added Contact -->
 <h3>Contact Added</h3>
 <p>
-  <strong>Name:</strong> {{ added_timer.name }} <br />
-  <strong>Segment:</strong> {{ added_timer.segment }}
+  <strong>Name:</strong> {{ added_task.name }} <br />
+  <strong>Segment:</strong> {{ added_task.segment }}
 </p>
 {% endif %}
 {% endblock %}

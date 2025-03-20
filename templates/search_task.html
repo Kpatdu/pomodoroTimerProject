@@ -1,0 +1,80 @@
+{% extends 'base.html' %} {% block title %}Search Task{% endblock %}
+<!-- -->
+{% block content %}
+<div>
+  <h1>Search Task</h1>
+  <form method="POST">
+    {% csrf_token %}
+    <div>
+      <label for="name">Name:</label>
+      <input type="text" id="name" name="name" value="{{ name_query }}" />
+    </div>
+    <div>
+      <label for="segment">Segment:</label>
+      <input type="text" id="segment" name="segment" value="{{ segment_query }}" />
+    </div>
+    <button type="submit">Search Contact</button>
+  </form>
+
+  <!-- Search Results -->
+  {% if tasks %}
+  <div>
+    <h2>Search Results</h2>
+    <p>Query: {{ name_query }} {{ segment_query }}</p>
+    <ul>
+      {% for task in tasks %}
+      <li>
+        <div>
+          <span>#{{ task.id }}</span>
+          <span>{{ task.name }}</span>
+          <span>{{ task.phone }}</span>
+        </div>
+      </li>
+      {% endfor %}
+    </ul>
+
+    <!-- Pagination Controls -->
+    <nav>
+      <ul>
+        {% if tasks.has_previous %}
+        <li>
+          <a href="?page=1&name={{ name_query }}&segment={{ segment_query }}"
+            >First</a
+          >
+        </li>
+        <li>
+          <a
+            href="?page={{ tasks.previous_page_number }}& name={{ name_query }}& segment={{ segment_query }}"
+            >Previous</a
+          >
+        </li>
+        {% endif %}
+        <li>
+          <span>
+            Page {{ tasks.number }} of {{ tasks.paginator.num_pages }}
+          </span>
+        </li>
+        {% if tasks.has_next %}
+        <li>
+          <a
+            href="?page={{ tasks.next_page_number }}&name={{ name_query }}&segment={{ segment_query }}"
+            >Next</a
+          >
+        </li>
+        <li>
+          <a
+            href="?page={{ tasks.paginator.num_pages }}&name={{ name_query }}&segment={{ segment_query }}"
+            >Last</a
+          >
+        </li>
+        {% endif %}
+      </ul>
+    </nav>
+  </div>
+
+  {% elif request.method == "POST" and not tasks %}
+  <!-- No Results Message -->
+  <div>No tasks found. Please try again.</div>
+  {% endif %}
+</div>
+{% endblock %}

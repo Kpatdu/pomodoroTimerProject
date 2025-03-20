@@ -10,16 +10,16 @@ def front_page(request):
 
 def home_page(request):
     success = False
-    added_timer = None
+    added_task = None
     if request.method == "POST":
         form = TimerForm(request.POST)
         if form.is_valid():
-            new_timer = form.save()
+            new_task = form.save()
             success = True
-            added_timer = new_timer
+            added_task = new_task
             return render(request, "home_page.html", 
             {"form": form,
-            "added_timer": added_timer,
+            "added_task": added_task,
             "success": success},
             )
     else:
@@ -27,34 +27,77 @@ def home_page(request):
     return render(
         request, "home_page.html",
         {"form": form,
-        "added_timer": added_timer,
+        "added_task": added_task,
         "success": success},
     )
     # return render(request, "home_page_css.html")
 
+def search_task(request):
+    page_number = request.GET.get("page", 1)
+    name = request.GET.get("name", "").strip()
+    segment = request.GET.get("segment", "").strip()
 
-def add_timer(request):
-    success = False
-    added_contact = None
     if request.method == "POST":
-        form = ContactForm(request.POST)
-        if form.is_valid():
-            new_contact = form.save()
-            success = True
-            added_contact = new_contact
-            return render(
-                request,
-                "timerHome.html", # "add_contact_css.html",
-                {"form": form,
-                 "added_timer": added_timer,
-                 "success": success},
-            )
+        name = request.POST.get("name", "").strip()
+        segment = request.POST.get("segment", "").strip()
+        # Reset to first page on new search
+        page_number = 1
+
+    if name or segment:
+        tasks = Timer.objects.filter(
+            name__icontains=name, segment__icontains=segment
+        ).order_by("id")  # Order by name to ensure consistency
     else:
-        form = ContactForm()
+        tasks = Timer.objects.all().order_by("id")  # Order the results
+
+    paginator = Paginator(tasks, 10)
+    page_obj = paginator.get_page(page_number)
+
     return render(
         request,
-        "timerHome.html", # "add_contact_css.html",
-        {"form": form,
-         "added_timer": added_timer,
-         "success": success},
+        "search_task_css.html",
+        {"tasks": page_obj,
+         "name_query": name,
+         "segment_query": segment},
     )
+
+
+def edit_task(request, task_id, page_number):
+    pn = request.GET.get("page", page_number)
+    print(f"[DBG] edit_task {task_id}, {page_number}, {pn} <<<")
+    success = False
+
+    if request.method == "POST":
+        task = Timer.objects.get(id=task_id)
+        name = request.POST.get("name")
+        segment = request.POST.get("segment")
+        if task.name != task or task.segment != segment:
+            task.name = name
+            task.segment = segment
+            task.save()
+            success = True
+
+    task_list = Timer.objects.all()
+    paginator = Paginator(task_list, 10)
+    page_number = request.POST.get(
+        "page", request.GET.get("page", page_number)
+    )
+    page_obj = paginator.get_page(page_number)
+    return render(
+        request,
+        # "edit_task.html",
+        "edit_task_css.html",
+        {
+            "tasks": page_obj,
+            "success": success,
+            "updated_tasks_id": task_id,
+        },
+    )
+
+def delete_task(request, task_id, page_number):
+    print("[DBG] delete_task called for ID:", task_id)
+    if request.method == "POST":
+        task = get_object_or_404(Timer, id=task_id)
+        task.delete()
+        # Redirect to the same page number after delete
+        return redirect("edit_task", task_id=task_id, page_number=page_number)

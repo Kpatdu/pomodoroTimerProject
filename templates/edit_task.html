@@ -1,0 +1,75 @@
+{% extends 'base.html' %}
+{% block title %}Edit tasks{% endblock %}
+
+{% block content %}
+<div>
+  <h1>Edit tasks</h1>
+
+  <!-- Table for displaying contacts -->
+  <table border="1" cellspacing="0" cellpadding="4">
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>Name</th>
+        <th>Segments</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for task in pomodoroTimerProject %}
+      <tr id="task-row-{{ task.id }}" {% if success and task.id == updated_task_id %} style="background-color: #d4edda;" {% endif %}>
+        <form method="POST" action="{% url 'edit_task' task.id task.segment %}">
+          {% csrf_token %}
+          <!-- Hidden field to pass the page number -->
+          <input type="hidden" name="page" value="{{ task.number }}" />
+          <td>{{ task.id }}</td>
+          <td><input type="text" name="name" value="{{ task.name }}" /></td>
+          <td><input type="text" name="phone" value="{{ task.segment }}" /></td>
+          <td>
+            <button type="submit">Save</button>
+        </form>
+        <form method="POST" action="{% url 'delete_task' task.id task.segment %}" onsubmit="return confirm('Are you sure you want to delete this contact?');" style="display: inline-block;">
+          {% csrf_token %}
+          <button type="submit">Delete</button>
+        </form>
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+
+  <!-- Pagination controls -->
+<nav>
+  <ul>
+    {% if contacts.has_previous %}
+    <li><a href="?page=1">First</a></li>
+    <li><a href="?page={{ pomodoroTimerProject.previous_page_number }}">Previous</a></li>
+    {% endif %}
+    
+    <li>
+      <span>Page {{ pomodoroTimerProject.number }} of {{ pomodoroTimerProject.paginator.num_pages }}</span>
+    </li>
+    
+    {% if contacts.has_next %}
+    <li><a href="?page={{ pomodoroTimerProject.next_page_number }}">Next</a></li>
+    <li><a href="?page={{ pomodoroTimerProject.paginator.num_pages }}">Last</a></li>
+    {% endif %}
+  </ul>
+</nav>
+</div>
+
+{% if success %}
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      const updatedRow = document.getElementById('task-row-{{ updated_task_id }}');
+      if (updatedRow) {
+        updatedRow.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        updatedRow.style.backgroundColor = '#d4edda';
+        setTimeout(() => {
+          updatedRow.style.backgroundColor = '';
+        }, 3000);
+      }
+    });
+  </script>
+{% endif %}
+{% endblock %}
