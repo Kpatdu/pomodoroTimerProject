@@ -17,8 +17,10 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 from .views import front_page
+from .views import home_page
 
 urlpatterns = [
     path("", front_page, name="front_page"),
+    path("home/", home_page, name="home_page"),
 
 ]

@@ -8,18 +8,23 @@
   </head>
   <body>
     <div>
-      <h1>Welcome</h1>
+      <h1>Welcome to the Pomodoro Timer Manager</h1>
+      <h2>What exactly is a Pomodoro Timer?</h2>
       <p>
-        Manage your contacts efficiently with the Contact Manager web
-        application.
+        A Pomodoro Timer is a time management method that breaks down work into
+        25-minute intervals. After each interval, you take a 5-minute break.
+        After every 4 work interval, you take a longer 15 to 30 minute break.
       </p>
       <p>This application allows you to:</p>
       <ul>
-        <li>Add new contacts with details such as name and phone number.</li>
-        <li>View a list of all saved contacts directly on the dashboard.</li>
-        <li>Search for specific contacts using their name or phone number.</li>
+        <li>Set a Pomodoro Timer.</li>
+        <li>Create tasks that you have to complete and the number of interval it would
+          take to finish.</li>
+        <li>Search for specific tasks using their name or interval.</li>
+        <li>Edit and delete specific tasks that you've created</li>
       </ul>
       <p>Click below to get started:</p>
+      <a href="{% url 'home_page' %}">Go to Timer</a>
     </div>
   </body>
 </html>
