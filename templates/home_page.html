@@ -42,9 +42,11 @@
         <h2>Time Remaining:</h2>
         <div id="countdown">
             00 : 04
-    </div>
+        </div>
         {% if data.segment != 0 %}
             <div id="pomodoroSegment">Pomodoro: 1/{{ data.segment }}</div>
+        {% else %}
+            <div id="pomodoroSegment">{{ data.segment }}</div>
         {% endif %}
 
     <button onclick="startTimer()">Start</button>
@@ -122,8 +124,8 @@
             stopTimer();
             // Going to extended break after 4 Pomodoro segments
             if ((cycle % 7 == 0)) {
-                minutes = 0;
-                seconds = 5;
+                minutes = 15;
+                seconds = 0;
                 document.getElementById('countdown').textContent =
                 (minutes < 10 ? '0' : '') + minutes + ' : ' +
                 (seconds < 10 ? '0' : '') + seconds;
@@ -131,15 +133,17 @@
             }
             // Going from break to Pomodoro
             else if ((cycle % 2 == 0)) {
-                minutes = 0;
-                seconds = 4;
+                minutes = 25;
+                seconds = 0;
                 document.getElementById('countdown').textContent =
                 (minutes < 10 ? '0' : '') + minutes + ' : ' +
                 (seconds < 10 ? '0' : '') + seconds;
                 alert("Time to work!");
                 pomodoroCycle += 1;
-                document.getElementById('pomodoroSegment').textContent =
-                "Pomodromo: " + pomodoroCycle + "/" + pomodoro;
+                if (pomodoro > 0) {
+                    document.getElementById('pomodoroSegment').textContent =
+                    "Pomodromo: " + pomodoroCycle + "/" + pomodoro;
+                }
             }
             // Going from Pomodoro to Break
             else {
@@ -147,8 +151,8 @@
                     alert("You have finished all of your segments!")
                 }
                 else {
-                minutes = 0;
-                seconds = 3;
+                minutes = 5;
+                seconds = 0;
                 document.getElementById('countdown').textContent =
                 (minutes < 10 ? '0' : '') + minutes + ' : ' +
                 (seconds < 10 ? '0' : '') + seconds;
