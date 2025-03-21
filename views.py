@@ -9,6 +9,11 @@ def front_page(request):
     # return render(request, "index_css.html")
 
 def home_page(request):
+    default_data = {
+        'name': "Default Pomodoro",
+        'minutes': 0,
+        'seconds': 4,
+    }
     success = False
     added_task = None
     if request.method == "POST":
@@ -20,7 +25,8 @@ def home_page(request):
             return render(request, "home_page.html", 
             {"form": form,
             "added_task": added_task,
-            "success": success},
+            "success": success,
+            "data": default_data},
             )
     else:
         form = TimerForm()
@@ -28,7 +34,8 @@ def home_page(request):
         request, "home_page.html",
         {"form": form,
         "added_task": added_task,
-        "success": success},
+        "success": success,
+        "data": default_data},
     )
     # return render(request, "home_page_css.html")
 

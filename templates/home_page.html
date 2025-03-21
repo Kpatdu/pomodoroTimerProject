@@ -3,7 +3,7 @@
 {% block content %}
 <style>
 
-    body {
+    #pomodoro {
         font-family: Arial, sans-serif;
         text-align: center;
         background-color: #f4f4f4;
@@ -38,17 +38,28 @@
 
 
 <h1>Home</h1>
-<body>
+<body id="pomodoro">
     <h2>Pomodoro Timer</h2>
     <div id="timer">
-        <h3 id="event">Event Name</h3>
+        <h3 id="event">{{ data.name }}</h3>
         <h2>Time Remaining:</h2>
-        <div id="countdown">25 : 10</div>
+        <div id="countdown">
+            {{ data.minutes|stringformat:"02d" }} : {{ data.seconds|stringformat:"02d" }}
+        </div>
     </div>
+    <button onclick="startTimer()">Start</button>
+    <button onclick="stopTimer()">Pause</button>
+    <button onclick="resetTimer()">Restart</button>
     <script>
+        let timerEnabled;
+        var initialMinutes = parseInt(document.getElementById('countdown').textContent.split(':')[0]);
+        var initialSeconds = parseInt(document.getElementById('countdown').textContent.split(':')[1]);
+        var minutes;
+        var seconds;
+        var cycle = 1;
         function updateTimer() {
-            var minutes = parseInt(document.getElementById('countdown'.textContent.trim().split(':')[0]));
-            var seconds = parseInt(document.getElementById('countdown'.textContent.trim().split(':')[1]));
+            minutes = parseInt(document.getElementById('countdown').textContent.split(':')[0]);
+            seconds = parseInt(document.getElementById('countdown').textContent.split(':')[1]);
 
             if (seconds > 0) {
                 seconds--;
@@ -62,8 +73,80 @@
             document.getElementById('countdown').textContent =
                 (minutes < 10 ? '0' : '') + minutes + ' : ' +
                 (seconds < 10 ? '0' : '') + seconds;
+
+            if ((minutes == 0) && (seconds == 0)) {
+                endTimer();
+                cycle += 1;
+            }
         }
-        setInterval(updateTimer, 1000)
+        function startTimer() {
+            if (!timerEnabled) {
+                timerEnabled = setInterval(updateTimer, 1000);
+            }
+        }
+        function stopTimer() {
+            clearInterval(timerEnabled);
+            timerEnabled = null;
+        }
+        function resetTimer() {
+            stopTimer();
+            // 15-Minute Break
+            if ((cycle % 7 == 0)) {
+                minutes = 15;
+                seconds = 0;
+                document.getElementById('countdown').textContent =
+                (minutes < 10 ? '0' : '') + minutes + ' : ' +
+                (seconds < 10 ? '0' : '') + seconds;
+            }
+            // Pomodoro Segment
+            else if ((cycle % 2 == 0)) {
+                minutes = initialMinutes;
+                seconds = initialSeconds;
+                document.getElementById('countdown').textContent =
+                (minutes < 10 ? '0' : '') + minutes + ' : ' +
+                (seconds < 10 ? '0' : '') + seconds;
+            }
+            // 5-Minute Break
+            else {
+                minutes = 5;
+                seconds = 0;
+                document.getElementById('countdown').textContent =
+                (minutes < 10 ? '0' : '') + minutes + ' : ' +
+                (seconds < 10 ? '0' : '') + seconds;
+            }
+        }
+
+        function endTimer() {
+            stopTimer();
+            // Going to extended break after 4 Pomodoro segments
+            if ((cycle % 7 == 0)) {
+                minutes = 15;
+                seconds = 0;
+                document.getElementById('countdown').textContent =
+                (minutes < 10 ? '0' : '') + minutes + ' : ' +
+                (seconds < 10 ? '0' : '') + seconds;
+                alert("Enjoy an extra 15-minutes to your break! You've earned it!");
+            }
+            // Going from break to Pomodoro
+            else if ((cycle % 2 == 0)) {
+                minutes = initialMinutes;
+                seconds = initialSeconds;
+                document.getElementById('countdown').textContent =
+                (minutes < 10 ? '0' : '') + minutes + ' : ' +
+                (seconds < 10 ? '0' : '') + seconds;
+                alert("Time to work!");
+            }
+            // Going from Pomodoro to Break
+            else {
+                minutes = 5;
+                seconds = 0;
+                document.getElementById('countdown').textContent =
+                (minutes < 10 ? '0' : '') + minutes + ' : ' +
+                (seconds < 10 ? '0' : '') + seconds;
+                alert("Time for a 5-minute break! Go stretch and take a rest!");
+            }
+            stopTimer();
+        }
     </script>
 </body>
 <!-- Contact Form -->
