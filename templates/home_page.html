@@ -102,7 +102,7 @@
                 (minutes < 10 ? '0' : '') + minutes + ' : ' +
                 (seconds < 10 ? '0' : '') + seconds;
             }
-            // Pomodoro Segment
+            // 5-Minute Break
             else if ((cycle % 2 == 0)) {
                 minutes = 25;
                 seconds = 0;
@@ -110,9 +110,9 @@
                 (minutes < 10 ? '0' : '') + minutes + ' : ' +
                 (seconds < 10 ? '0' : '') + seconds;
             }
-            // 5-Minute Break
+            // Pomodoro Segment
             else {
-                minutes = 5;
+                minutes = 25;
                 seconds = 0;
                 document.getElementById('countdown').textContent =
                 (minutes < 10 ? '0' : '') + minutes + ' : ' +
