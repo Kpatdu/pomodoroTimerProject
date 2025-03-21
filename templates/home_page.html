@@ -34,9 +34,6 @@
     }
 
 </style>
-
-
-
 <h1>Home</h1>
 <body id="pomodoro">
     <h2>Pomodoro Timer</h2>
@@ -44,16 +41,21 @@
         <h3 id="event">{{ data.name }}</h3>
         <h2>Time Remaining:</h2>
         <div id="countdown">
-            {{ data.minutes|stringformat:"02d" }} : {{ data.seconds|stringformat:"02d" }}
-        </div>
+            00 : 04
     </div>
+        {% if data.segment != 0 %}
+            <div id="pomodoroSegment">Pomodoro: 1/{{ data.segment }}</div>
+        {% endif %}
+
     <button onclick="startTimer()">Start</button>
     <button onclick="stopTimer()">Pause</button>
     <button onclick="resetTimer()">Restart</button>
+    </div>
+
     <script>
         let timerEnabled;
-        var initialMinutes = parseInt(document.getElementById('countdown').textContent.split(':')[0]);
-        var initialSeconds = parseInt(document.getElementById('countdown').textContent.split(':')[1]);
+        var pomodoroCycle = 1;
+        var pomodoro = parseInt(document.getElementById('pomodoroSegment').textContent.split('/')[1]);
         var minutes;
         var seconds;
         var cycle = 1;
@@ -100,8 +102,8 @@
             }
             // Pomodoro Segment
             else if ((cycle % 2 == 0)) {
-                minutes = initialMinutes;
-                seconds = initialSeconds;
+                minutes = 25;
+                seconds = 0;
                 document.getElementById('countdown').textContent =
                 (minutes < 10 ? '0' : '') + minutes + ' : ' +
                 (seconds < 10 ? '0' : '') + seconds;
@@ -120,8 +122,8 @@
             stopTimer();
             // Going to extended break after 4 Pomodoro segments
             if ((cycle % 7 == 0)) {
-                minutes = 15;
-                seconds = 0;
+                minutes = 0;
+                seconds = 5;
                 document.getElementById('countdown').textContent =
                 (minutes < 10 ? '0' : '') + minutes + ' : ' +
                 (seconds < 10 ? '0' : '') + seconds;
@@ -129,40 +131,32 @@
             }
             // Going from break to Pomodoro
             else if ((cycle % 2 == 0)) {
-                minutes = initialMinutes;
-                seconds = initialSeconds;
+                minutes = 0;
+                seconds = 4;
                 document.getElementById('countdown').textContent =
                 (minutes < 10 ? '0' : '') + minutes + ' : ' +
                 (seconds < 10 ? '0' : '') + seconds;
                 alert("Time to work!");
+                pomodoroCycle += 1;
+                document.getElementById('pomodoroSegment').textContent =
+                "Pomodromo: " + pomodoroCycle + "/" + pomodoro;
             }
             // Going from Pomodoro to Break
             else {
-                minutes = 5;
-                seconds = 0;
+                if (pomodoroCycle == pomodoro) {
+                    alert("You have finished all of your segments!")
+                }
+                else {
+                minutes = 0;
+                seconds = 3;
                 document.getElementById('countdown').textContent =
                 (minutes < 10 ? '0' : '') + minutes + ' : ' +
                 (seconds < 10 ? '0' : '') + seconds;
                 alert("Time for a 5-minute break! Go stretch and take a rest!");
+                }
             }
             stopTimer();
         }
     </script>
 </body>
-<!-- Contact Form -->
-<form method="POST">
-  {% csrf_token %}
-  {{ form.as_p }}
-  <button type="submit">Add Task</button>
-</form>
-<!-- Success Message -->
-{% if success %}
-<p><strong>Success!</strong> The Task has been successfully added.</p>
-<!-- Display Added Contact -->
-<h3>Contact Added</h3>
-<p>
-  <strong>Name:</strong> {{ added_task.name }} <br />
-  <strong>Segment:</strong> {{ added_task.segment }}
-</p>
-{% endif %}
 {% endblock %}

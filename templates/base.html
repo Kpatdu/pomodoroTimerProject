@@ -32,10 +32,13 @@
           <a class="nav-link" href="{% url 'home_page' %}">Home</a>
         </li>
         <li class="nav-item">
-            <a class="nav-link" href="{% url 'edit_task' 0 1 %}">Edit Tasks</a>
+          <a class="nav-link" href="{% url 'add_task' %}">Add Tasks</a>
         </li>
         <li class="nav-item">
-            <a class="nav-link" href="{% url 'search_task' %}">Search Tasks</a>
+          <a class="nav-link" href="{% url 'search_task' %}">Search Tasks</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href="{% url 'edit_task' 0 1 %}">Edit Tasks</a>
         </li>
       </ul>
     </div>

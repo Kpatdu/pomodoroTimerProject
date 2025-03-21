@@ -11,8 +11,7 @@ def front_page(request):
 def home_page(request):
     default_data = {
         'name': "Default Pomodoro",
-        'minutes': 0,
-        'seconds': 4,
+        'segment': 0,
     }
     success = False
     added_task = None
@@ -23,21 +22,39 @@ def home_page(request):
             success = True
             added_task = new_task
             return render(request, "home_page.html", 
-            {"form": form,
-            "added_task": added_task,
-            "success": success,
-            "data": default_data},
+            {"data": default_data,},
             )
     else:
         form = TimerForm()
     return render(
         request, "home_page.html",
+        {"data": default_data,},
+    )
+
+def add_task(request):
+    success = False
+    added_task = None
+    if request.method == "POST":
+        form = TimerForm(request.POST)
+        if form.is_valid():
+            new_task = form.save()
+            success = True
+            added_task = new_task
+            return render(request, "add_task.html", 
+            {"form": form,
+            "added_task": added_task,
+            "success": success
+            },
+            )
+    else:
+        form = TimerForm()
+    return render(
+        request, "add_task.html",
         {"form": form,
         "added_task": added_task,
-        "success": success,
-        "data": default_data},
+        "success": success
+        },
     )
-    # return render(request, "home_page_css.html")
 
 def search_task(request):
     page_number = request.GET.get("page", 1)
@@ -108,3 +125,22 @@ def delete_task(request, task_id, page_number):
         task.delete()
         # Redirect to the same page number after delete
         return redirect("edit_task", task_id=task_id, page_number=page_number)
+
+def set_task(request, task_id):
+    if request.method == "POST":
+        task = Timer.objects.get(id=task_id)
+        data = {
+            'name': task.name,
+            'segment': task.segment,
+        }
+        return render(request, "home_page.html", 
+        {"data": data},
+        )
+    else:
+        default_data = {
+            "name": "Default Pomodoro",
+            "segment": 0,
+        }
+        return render(request, "home_page.html",
+        {"data": default_data,},
+        )

@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+{% block title %}Pomodoro Timer Home{% endblock %}
+{% block content %}
+<!-- Contact Form -->
+<h1>Add Task:</h1>
+<form method="POST">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Add Task</button>
+  </form>
+  <!-- Success Message -->
+  {% if success %}
+  <p><strong>Success!</strong> The Task has been successfully added.</p>
+  <!-- Display Added Contact -->
+  <h3>Contact Added</h3>
+  <p>
+    <strong>Name:</strong> {{ added_task.name }} <br />
+    <strong>Segment:</strong> {{ added_task.segment }}
+  </p>
+  {% endif %}
+  {% endblock %}

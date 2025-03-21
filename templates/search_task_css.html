@@ -58,6 +58,14 @@
           >
           <span
             style="
+                width: 250px;
+                overflow: hidden;
+                text-overflow: ellipsis;
+                white-space: nowrap;
+                "
+                >Number of Pomodoros: </span>
+          <span
+            style="
               width: 250px;
               overflow: hidden;
               text-overflow: ellipsis;
@@ -65,6 +73,12 @@
             "
             >{{ task.segment }}</span
           >
+          <span>
+            <form method="POST" action="{% url 'set_task' task.id %}" onsubmit="return confirm('Do you want to select this task?');">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-primary btn-sm">Select</button>
+              </form>
+          </span>
         </div>
       </li>
       {% endfor %}
